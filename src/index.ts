@@ -13,7 +13,7 @@ async function run() {
         const role = getInput("role", {required: true});
         const idTokenTask = getIDToken("sts.amazonaws.com")
         const sts = new STS({
-            region,
+            region: region,
             stsRegionalEndpoints: "regional",
             customUserAgent: "configure-aws-credentials-for-github-actions"
         });
