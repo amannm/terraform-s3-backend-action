@@ -7,7 +7,7 @@ import {join} from "path";
 async function run() {
     const tempDirectory = process.env.RUNNER_TEMP;
     if (!tempDirectory) {
-        throw new Error('$RUNNER_TEMP is not set');
+        throw new Error('runner temp directory is not set');
     }
     try {
         const accountId = getInput("account-id", {required: true});
@@ -22,8 +22,6 @@ async function run() {
             customUserAgent: "configure-aws-credentials-for-github-actions"
         });
         const idToken = await idTokenTask
-
-
         const response = await sts.assumeRoleWithWebIdentity({
             RoleArn: `arn:aws:iam::${accountId}:role/${role}`,
             RoleSessionName: "GitHubActions",
@@ -31,16 +29,14 @@ async function run() {
             WebIdentityToken: idToken,
         }).promise()
         if (response.Credentials) {
-            const lines = [
-                `bucket = "${bucket}"`,
-                `key = "${key}"`,
-                `access_key = "${response.Credentials.AccessKeyId}"`,
-                `secret_key = "${response.Credentials.SecretAccessKey}"`,
-                `token = "${response.Credentials.SessionToken}"`,
-            ]
+            const content = `bucket = "${bucket}"
+            key = "${key}"
+            access_key = "${response.Credentials.AccessKeyId}"
+            secret_key = "${response.Credentials.SecretAccessKey}"
+            token = "${response.Credentials.SessionToken}"`
             const filename = randomBytes(12).toString("hex");
             const path = join(tempDirectory, filename);
-            await fs.writeFile(path, lines, {mode: 0o640, flag: "wx"})
+            await fs.writeFile(path, content, {mode: 0o640, flag: "wx"})
             setOutput("path", path)
         } else {
             setFailed("no credentials returned in response")
