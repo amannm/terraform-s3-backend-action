@@ -10,7 +10,7 @@ IAM OIDC role.
 
 ```yaml
 - id: backend-config
-  uses: amannm/terraform-s3-backend-action@releases/v1
+  uses: amannm/terraform-s3-backend-action@v1
   with:
     account-id: "0123456789"
     region: "us-east-1"
