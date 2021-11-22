@@ -41,6 +41,7 @@ async function run() {
         }
     } catch (error) {
         setFailed(`action failure: ${error}`)
+        throw error
     }
 }
 
