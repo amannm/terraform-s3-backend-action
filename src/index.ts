@@ -5,6 +5,10 @@ import {promises as fs} from "fs";
 import {join} from "path";
 
 async function run() {
+    const tempDirectory = process.env.RUNNER_TEMP;
+    if (!tempDirectory) {
+        throw new Error('$RUNNER_TEMP is not set');
+    }
     try {
         const accountId = getInput("account-id", {required: true});
         const region = getInput("region", {required: true});
@@ -18,6 +22,8 @@ async function run() {
             customUserAgent: "configure-aws-credentials-for-github-actions"
         });
         const idToken = await idTokenTask
+
+
         const response = await sts.assumeRoleWithWebIdentity({
             RoleArn: `arn:aws:iam::${accountId}:role/${role}`,
             RoleSessionName: "GitHubActions",
@@ -33,7 +39,7 @@ async function run() {
                 `token = "${response.Credentials.SessionToken}"`,
             ]
             const filename = randomBytes(12).toString("hex");
-            const path = join(".", filename);
+            const path = join(tempDirectory, filename);
             await fs.writeFile(path, lines, {mode: 0o640, flag: "wx"})
             setOutput("path", path)
         } else {
