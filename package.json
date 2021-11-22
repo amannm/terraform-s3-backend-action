@@ -1,0 +1,34 @@
+{
+  "name": "terraform-s3-backend-action",
+  "version": "1.0.0",
+  "description": "Terraform S3 Backend Action",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc",
+    "package": "ncc build --source-map --license licenses.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amannm/terraform-s3-backend-action.git"
+  },
+  "author": "Amann Malik <amannmalik@gmail.com>",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/amannm/terraform-s3-backend-action/issues"
+  },
+  "homepage": "https://github.com/amannm/terraform-s3-backend-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "aws-sdk": "^2.1033.0",
+    "@types/node": "^16.11.9"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vercel/ncc": "^0.32.0",
+    "eslint": "^8.3.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "typescript": "^4.5.2"
+  }
+}
