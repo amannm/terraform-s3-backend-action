@@ -23,7 +23,6 @@ async function run() {
             RoleSessionName: "GitHubActions",
             DurationSeconds: 3600,
             WebIdentityToken: idToken,
-        }, () => {
         }).promise()
         if (response.Credentials) {
             const lines = [
