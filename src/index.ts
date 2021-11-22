@@ -14,7 +14,7 @@ async function run() {
         const accountId = getInput("account-id", {required: true});
         const region = getInput("region", {required: true});
         const bucket = getInput("bucket", {required: true});
-        const key = getInput("key", {required: true}) || "terraform.tfstate";
+        const key = getInput("key", {required: false}) || "terraform.tfstate";
         const role = getInput("role", {required: true});
         const idTokenTask = getIDToken("sts.amazonaws.com");
         const sts = new STS({
