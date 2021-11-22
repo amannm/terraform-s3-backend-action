@@ -12,10 +12,10 @@ async function run() {
             return;
         }
         const accountId = getInput("account-id", {required: true});
+        const role = getInput("role", {required: true});
         const region = getInput("region", {required: true});
         const bucket = getInput("bucket", {required: true});
         const key = getInput("key", {required: false}) || "terraform.tfstate";
-        const role = getInput("role", {required: true});
         const idTokenTask = getIDToken("sts.amazonaws.com");
         const sts = new STS({
             region: region,
@@ -30,7 +30,8 @@ async function run() {
             WebIdentityToken: idToken,
         }).promise();
         if (response.Credentials) {
-            const content = `bucket = "${bucket}"
+            const content = `region = "${region}"
+            bucket = "${bucket}"
             key = "${key}"
             access_key = "${response.Credentials.AccessKeyId}"
             secret_key = "${response.Credentials.SecretAccessKey}"
