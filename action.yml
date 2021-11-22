@@ -1,12 +1,18 @@
 name: "Terraform S3 Backend Action"
 author: "Amann Malik"
-description: "Terraform S3 Backend Action"
+description: >-
+  This GitHub Action allows you to conveniently generate a backend configuration file
+  used to initialize any Terraform remote backend (.tfstate) hosted in an S3 bucket of
+  any AWS account that has authorized your GitHub repository via an IAM OIDC role.
 branding:
-  icon: "cloud"
-  color: "blue"
+  icon: "download-cloud"
+  color: "purple"
 inputs:
   account-id:
     description: "AWS account ID of the Terraform state S3 bucket"
+    required: true
+  role:
+    description: "Name of the IAM OIDC role assumable by the GitHub repository"
     required: true
   region:
     description: "AWS region of the Terraform state S3 bucket"
@@ -18,9 +24,6 @@ inputs:
     description: "S3 key of the Terraform state"
     required: false
     default: "terraform.tfstate"
-  role:
-    description: "Name of the IAM OIDC role assumable by the GitHub repository"
-    required: true
 outputs:
   path:
     description: "Path to the backend config file for use with Terraform init"

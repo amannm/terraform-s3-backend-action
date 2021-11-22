@@ -5,46 +5,46 @@ import {promises as fs} from "fs";
 import {join} from "path";
 
 async function run() {
-    const tempDirectory = process.env.RUNNER_TEMP;
-    if (!tempDirectory) {
-        throw new Error('runner temp directory is not set');
-    }
     try {
+        const tempDirectory = process.env.RUNNER_TEMP;
+        if (!tempDirectory) {
+            setFailed("runner temp directory not defined");
+            return;
+        }
         const accountId = getInput("account-id", {required: true});
         const region = getInput("region", {required: true});
         const bucket = getInput("bucket", {required: true});
-        const key = getInput("key", {required: true});
+        const key = getInput("key", {required: true}) || "terraform.tfstate";
         const role = getInput("role", {required: true});
-        const idTokenTask = getIDToken("sts.amazonaws.com")
+        const idTokenTask = getIDToken("sts.amazonaws.com");
         const sts = new STS({
             region: region,
             stsRegionalEndpoints: "regional",
-            customUserAgent: "configure-aws-credentials-for-github-actions"
+            customUserAgent: "terraform-s3-backend-action"
         });
-        const idToken = await idTokenTask
+        const idToken = await idTokenTask;
         const response = await sts.assumeRoleWithWebIdentity({
             RoleArn: `arn:aws:iam::${accountId}:role/${role}`,
             RoleSessionName: "GitHubActions",
             DurationSeconds: 3600,
             WebIdentityToken: idToken,
-        }).promise()
+        }).promise();
         if (response.Credentials) {
             const content = `bucket = "${bucket}"
             key = "${key}"
             access_key = "${response.Credentials.AccessKeyId}"
             secret_key = "${response.Credentials.SecretAccessKey}"
-            token = "${response.Credentials.SessionToken}"`
-            const filename = randomBytes(12).toString("hex");
+            token = "${response.Credentials.SessionToken}"`;
+            const filename = randomBytes(16).toString("hex");
             const path = join(tempDirectory, filename);
-            await fs.writeFile(path, content, {mode: 0o640, flag: "wx"})
-            setOutput("path", path)
+            await fs.writeFile(path, content, {mode: 0o640, flag: "wx"});
+            setOutput("path", path);
         } else {
-            setFailed("no credentials returned in response")
+            setFailed("no credentials returned in response");
         }
     } catch (error) {
-        setFailed(`action failure: ${error}`)
-        throw error
+        setFailed(`action failure: ${error}`);
     }
 }
 
-run()
+run();
