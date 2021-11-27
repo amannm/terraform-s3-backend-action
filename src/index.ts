@@ -16,7 +16,8 @@ async function run() {
         const region = getInput("region", {required: true});
         const bucket = getInput("bucket", {required: true});
         const key = getInput("key", {required: false}) || "terraform.tfstate";
-        const idTokenTask = getIDToken("sts.amazonaws.com");
+        const audience = getInput("audience", {required: false}) || "sts.amazonaws.com";
+        const idTokenTask = getIDToken(audience);
         const sts = new STS({
             region: region,
             stsRegionalEndpoints: "regional",

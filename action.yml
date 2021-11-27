@@ -21,6 +21,10 @@ inputs:
     description: "S3 key of the Terraform state"
     required: false
     default: "terraform.tfstate"
+  audience:
+    description: "Audience value to set on the OIDC token"
+    required: false
+    default: "sts.amazonaws.com"
 outputs:
   path:
     description: "Path to the backend config file for use with Terraform init"
